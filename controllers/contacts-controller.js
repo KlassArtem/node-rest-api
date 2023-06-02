@@ -36,11 +36,12 @@ const addSchema = Joi.object({
     }
   }
 
-const postReq = async (req, res, next) => {
+  const postReq = async (req, res, next) => {
     try {
       const { error } = addSchema.validate(req.body);
       if (error) {
-        throw HttpErrors(400, error.message);
+        const missingField = error.details[0].context.label;
+        throw new HttpErrors(400, `Missing required ${missingField} field`);
       }
       const add = await contacts.addContact(req.body);
       res.status(201).json(add);
@@ -48,6 +49,7 @@ const postReq = async (req, res, next) => {
       next(error);
     }
   }
+  
 
 const deleteReq = async (req, res, next) => {
     try {
@@ -55,7 +57,7 @@ const deleteReq = async (req, res, next) => {
       const remove = await contacts.removeContact(contactId);
   
       if (!remove) {
-        throw HttpErrors(400, "Not found");
+        throw HttpErrors(404, "Not found");
       }
   
       res.json({
@@ -70,18 +72,22 @@ const deleteReq = async (req, res, next) => {
     try {
       const { error } = addSchema.validate(req.body);
       if (error) {
-        throw HttpErrors(400, error.message);
+        throw new HttpErrors(400, error.message);
       }
       const { contactId } = req.params;
+      if (!req.body) {
+        throw new HttpErrors(400, "Missing fields");
+      }
       const result = await contacts.updateContact(contactId, req.body);
       if (!result) {
-        throw HttpErrors(404, "Not found");
+        throw new HttpErrors(404, "Not found");
       }
       res.json(result);
     } catch (error) {
       next(error);
     }
   }
+  
 
   module.exports = {
     getAllReq,
