@@ -36,12 +36,11 @@ const addSchema = Joi.object({
     }
   }
 
-  const postReq = async (req, res, next) => {
+const postReq = async (req, res, next) => {
     try {
       const { error } = addSchema.validate(req.body);
       if (error) {
-        const missingField = error.details[0].context.label;
-        throw new HttpErrors(400, `Missing required ${missingField} field`);
+        throw HttpErrors(400, error.message);
       }
       const add = await contacts.addContact(req.body);
       res.status(201).json(add);
@@ -49,7 +48,6 @@ const addSchema = Joi.object({
       next(error);
     }
   }
-  
 
 const deleteReq = async (req, res, next) => {
     try {
@@ -72,22 +70,18 @@ const deleteReq = async (req, res, next) => {
     try {
       const { error } = addSchema.validate(req.body);
       if (error) {
-        throw new HttpErrors(400, error.message);
+        throw HttpErrors(400, error.message);
       }
       const { contactId } = req.params;
-      if (!req.body) {
-        throw new HttpErrors(400, "Missing fields");
-      }
       const result = await contacts.updateContact(contactId, req.body);
       if (!result) {
-        throw new HttpErrors(404, "Not found");
+        throw HttpErrors(404, "Not found");
       }
       res.json(result);
     } catch (error) {
       next(error);
     }
   }
-  
 
   module.exports = {
     getAllReq,
