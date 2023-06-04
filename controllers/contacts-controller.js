@@ -5,12 +5,18 @@ const contacts = require("../models/contacts")
 const {HttpErrors} = require("../helpers")
 
 const addSchema = Joi.object({
-    name: Joi.string().required(),
+    name: Joi.string().required().messages({
+      "any.required":`missing required "name" field`,  
+      "string.empty" : `"name" cannot be an empty field`,
+    }),
     phone: Joi.string().required().messages({
-      "any.required":`"phone" is a required field`,  
+      "any.required":`missing required "phone" field`,  
       "string.empty" : `"phone" cannot be an empty field`,
     }),
-    email: Joi.string().required(),
+    email: Joi.string().required().messages({
+      "any.required":`missing required "email" field`,  
+      "string.empty" : `"email" cannot be an empty field`,
+    }),
   });
 
   const getAllReq = async (req, res, next) => {
@@ -69,6 +75,15 @@ const deleteReq = async (req, res, next) => {
   const putReq = async (req, res, next) => {
     try {
       const { error } = addSchema.validate(req.body);
+      
+      if (!req.body || Object.keys(req.body).length === 0) {
+        const error = new Error("Missing fields");
+        error.statusCode = 400;
+        throw error;
+      }
+      
+      
+
       if (error) {
         throw HttpErrors(400, error.message);
       }
