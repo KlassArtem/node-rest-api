@@ -78,12 +78,11 @@ const deleteReq = async (req, res, next) => {
       
       if (!req.body || Object.keys(req.body).length === 0) {
         const error = new Error("Missing fields");
-        error.statusCode = 400;
+        error.status = 400;
         throw error;
       }
       
       
-
       if (error) {
         throw HttpErrors(400, error.message);
       }
