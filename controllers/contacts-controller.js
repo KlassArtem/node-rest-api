@@ -101,7 +101,7 @@ const deleteReq = async (req, res, next) => {
         throw HttpErrors(400, error.message);
       }
       const { contactId } = req.params;
-      const result = await contacts.findByIdAndUpdate(contactId, req.body, {
+      const result = await Contact.findByIdAndUpdate(contactId, req.body, {
         new: true,
       });
       if (!result) {
