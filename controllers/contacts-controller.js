@@ -17,7 +17,7 @@ const addSchema = Joi.object({
 
   const getAllReq = async (req, res, next) => {
     try {
-      const all = await Contact.listContacts();
+      const all = await Contact.find();
       res.json(all);
     } catch (error) {
       next(error);
@@ -27,7 +27,7 @@ const addSchema = Joi.object({
   const getByIdReq = async (req, res, next) => {
     try {
       const { contactId } = req.params;
-      const byId = await Contact.getContactById(contactId);
+      const byId = await Contact.findById(contactId);
   
       if (!byId) {
         throw HttpErrors(404, "Not found");
@@ -44,7 +44,7 @@ const postReq = async (req, res, next) => {
       if (error) {
         throw HttpErrors(400, error.message);
       }
-      const add = await Contact.addContact(req.body);
+      const add = await Contact.create(req.body);
       res.status(201).json(add);
     } catch (error) {
       next(error);
@@ -54,7 +54,7 @@ const postReq = async (req, res, next) => {
 const deleteReq = async (req, res, next) => {
     try {
       const { contactId } = req.params;
-      const remove = await Contact.removeContact(contactId);
+      const remove = await Contact.findByIdAndRemove(contactId);
   
       if (!remove) {
         throw HttpErrors(404, "Not found");
@@ -83,7 +83,7 @@ const deleteReq = async (req, res, next) => {
         throw HttpErrors(400, error.message);
       }
       const { contactId } = req.params;
-      const result = await Contact.updateContact(contactId, req.body);
+      const result = await Contact.findByIdAndUpdate(contactId, req.body);
       if (!result) {
         throw HttpErrors(404, "Not found");
       }
@@ -98,7 +98,7 @@ const deleteReq = async (req, res, next) => {
     try {
       const { error } = favoriteSchema.validate(req.body);
       if (error) {
-        throw HttpErrors(400, error.message);
+        throw HttpErrors(400, "missing field favorite");
       }
       const { contactId } = req.params;
       const result = await Contact.findByIdAndUpdate(contactId, req.body, {
