@@ -1,8 +1,8 @@
 const Joi = require("joi");
 
-const Contact = require("../models/contact")
+const Contact = require("../models/contact");
 
-const {HttpErrors} = require("../helpers")
+const { HttpErrors } = require("../helpers");
 
 const addSchema = Joi.object({
   name: Joi.string().required(),
@@ -32,7 +32,7 @@ const addSchema = Joi.object({
       if (!byId) {
         throw HttpErrors(404, "Not found");
       }
-  
+      res.json(byId);
     } catch (error) {
       next(error);
     }
