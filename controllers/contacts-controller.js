@@ -32,7 +32,7 @@ const addSchema = Joi.object({
       if (!byId) {
         throw HttpErrors(404, "Not found");
       }
-      res.json(byId);
+  
     } catch (error) {
       next(error);
     }
