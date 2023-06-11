@@ -5,11 +5,23 @@ const Contact = require("../models/contact");
 const { HttpErrors } = require("../helpers");
 
 const addSchema = Joi.object({
-  name: Joi.string().required(),
-  phone: Joi.number().required(),
-  email: Joi.string().required(),
-  favorite: Joi.boolean(),
-  });
+  name: Joi.string().required().messages({
+    "any.required":`missing required "name" field`,  
+    "string.empty" : `"name" cannot be an empty field`,
+  }),
+  phone: Joi.string().required().messages({
+    "any.required":`missing required "phone" field`,  
+    "string.empty" : `"phone" cannot be an empty field`,
+  }),
+  email: Joi.string().required().messages({
+    "any.required":`missing required "email" field`,  
+    "string.empty" : `"email" cannot be an empty field`,
+  }),
+  favorite: Joi.boolean().required().messages({
+    "any.required": `" missing required favorite" field`,
+    "string.empty": `"favorite" cannot be an empty field,`,
+  }),
+});
 
   const favoriteSchema = Joi.object({
     favorite: Joi.boolean().required(),
