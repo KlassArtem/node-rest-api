@@ -1,27 +1,35 @@
 const Joi = require("joi");
 
-const contacts = require("../models/contacts")
+const Contact = require("../models/contact");
 
-const {HttpErrors} = require("../helpers")
+const { HttpErrors } = require("../helpers");
 
 const addSchema = Joi.object({
-    name: Joi.string().required().messages({
-      "any.required":`missing required "name" field`,  
-      "string.empty" : `"name" cannot be an empty field`,
-    }),
-    phone: Joi.string().required().messages({
-      "any.required":`missing required "phone" field`,  
-      "string.empty" : `"phone" cannot be an empty field`,
-    }),
-    email: Joi.string().required().messages({
-      "any.required":`missing required "email" field`,  
-      "string.empty" : `"email" cannot be an empty field`,
-    }),
-  });
+  name: Joi.string().required().messages({
+    "any.required":`missing required "name" field`,  
+    "string.empty" : `"name" cannot be an empty field`,
+  }),
+  phone: Joi.string().required().messages({
+    "any.required":`missing required "phone" field`,  
+    "string.empty" : `"phone" cannot be an empty field`,
+  }),
+  email: Joi.string().required().messages({
+    "any.required":`missing required "email" field`,  
+    "string.empty" : `"email" cannot be an empty field`,
+  }),
+  favorite: Joi.boolean().messages({
+    "any.required": `missing required "favorite" field`,
+    "string.empty": `"favorite" cannot be an empty field,`,
+  }),
+});
+
+  const favoriteSchema = Joi.object({
+    favorite: Joi.boolean().required(),
+  })
 
   const getAllReq = async (req, res, next) => {
     try {
-      const all = await contacts.listContacts();
+      const all = await Contact.find();
       res.json(all);
     } catch (error) {
       next(error);
@@ -31,7 +39,7 @@ const addSchema = Joi.object({
   const getByIdReq = async (req, res, next) => {
     try {
       const { contactId } = req.params;
-      const byId = await contacts.getContactById(contactId);
+      const byId = await Contact.findById(contactId);
   
       if (!byId) {
         throw HttpErrors(404, "Not found");
@@ -48,7 +56,7 @@ const postReq = async (req, res, next) => {
       if (error) {
         throw HttpErrors(400, error.message);
       }
-      const add = await contacts.addContact(req.body);
+      const add = await Contact.create(req.body);
       res.status(201).json(add);
     } catch (error) {
       next(error);
@@ -58,7 +66,7 @@ const postReq = async (req, res, next) => {
 const deleteReq = async (req, res, next) => {
     try {
       const { contactId } = req.params;
-      const remove = await contacts.removeContact(contactId);
+      const remove = await Contact.findByIdAndRemove(contactId);
   
       if (!remove) {
         throw HttpErrors(404, "Not found");
@@ -87,7 +95,7 @@ const deleteReq = async (req, res, next) => {
         throw HttpErrors(400, error.message);
       }
       const { contactId } = req.params;
-      const result = await contacts.updateContact(contactId, req.body);
+      const result = await Contact.findByIdAndUpdate(contactId, req.body);
       if (!result) {
         throw HttpErrors(404, "Not found");
       }
@@ -97,10 +105,31 @@ const deleteReq = async (req, res, next) => {
     }
   }
 
+
+  const patchReq = async (req, res, next) => {
+    try {
+      const { error } = favoriteSchema.validate(req.body);
+      if (error) {
+        throw HttpErrors(400, "missing field favorite");
+      }
+      const { contactId } = req.params;
+      const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+        new: true,
+      });
+      if (!result) {
+        throw HttpErrors(404, "Not found");
+      }
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
+};
+  
   module.exports = {
     getAllReq,
     getByIdReq,
     postReq,
     deleteReq,
     putReq,
+    patchReq,
   }
