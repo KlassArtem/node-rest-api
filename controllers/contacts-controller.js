@@ -29,12 +29,18 @@ const addSchema = Joi.object({
 
   const getAllReq = async (req, res, next) => {
     try {
-      const all = await Contact.find();
+      const { _id: owner } = req.user;
+      const { page = 1, limit = 10 } = req.query;
+      const skip = (page - 1) * limit;
+      const all = await Contact.find({ owner }, "-createdAt -updatedAT", {
+        skip,
+        limit,
+      }).populate("owner", "subscription email");
       res.json(all);
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   const getByIdReq = async (req, res, next) => {
     try {
@@ -56,7 +62,8 @@ const postReq = async (req, res, next) => {
       if (error) {
         throw HttpErrors(400, error.message);
       }
-      const add = await Contact.create(req.body);
+      const { _id: owner } = req.user;
+      const add = await Contact.create({ ...req.body, owner });
       res.status(201).json(add);
     } catch (error) {
       next(error);
