@@ -16,7 +16,7 @@ router.delete("/:contactId", authenticate, contactsController.deleteReq);
 
 router.put("/:contactId", authenticate, isValidId, contactsController.putReq);
 
-router.patch("/:contactId/favorite", authenticate, isValidId, contactsController.patchReqFavorite);
+router.patch("/:contactId/favorite", authenticate, isValidId, contactsController.patchReq);
 
 
 
