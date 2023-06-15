@@ -31,7 +31,7 @@ userSchema.post("save", HandleMongoose);
 const registerShema = Joi.object({
   password: Joi.string().required(),
   email: Joi.string().required(),
-  subscription: Joi.string().required(),
+  subscription: Joi.string(),
 });
 
 const loginShema = Joi.object({
