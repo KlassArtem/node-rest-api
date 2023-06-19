@@ -20,7 +20,11 @@ const userSchema = new Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
-   token:String
+    avatarURL: {
+      type: String,
+      require: true,
+    },
+    token: String,
   },
 
   { versionKey: false, timeseries: true }
