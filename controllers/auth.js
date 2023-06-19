@@ -142,7 +142,7 @@ const patchAvatar = async (req, res) => {
 Jimp.read(`${avatarDes}/${filename}`,(err,fileAvatar) => {
   if (err) throw err
   fileAvatar
-  .cover(250,250)
+  .resize(250,250)
   .write(`${avatarDes}/${filename}`) 
 })
 
