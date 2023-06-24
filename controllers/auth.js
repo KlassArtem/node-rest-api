@@ -173,7 +173,7 @@ const verify = async (req, res) => {
     verify: true,
   });
 
-  res.status(201).json({
+  res.status(200).json({
     message: "Verification successful",
   });
 };
@@ -193,7 +193,7 @@ const resetVerify = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify Email",
-    html: `<a target="_blank" href="${VERIFY_PATH}/api/auth/verify/${user.verificationToken}">Click here to verify Email</a>`,
+    html: `<a target="_blank" href="${VERIFY_PATH}/api/users/verify/${user.verificationToken}">Click here to verify Email</a>`,
   };
 
   await sendEmail(verifyEmail);
