@@ -42,7 +42,7 @@ const register = async (req, res, next) => {
     const verifyEmail = {
       to: email,
       subject: "Verify Email",
-      html: `<a target="_blank" href="${VERIFY_PATH}/api/users/verify/${verificationToken}">Click here to verify Email</a>`,
+      html: `<a target="_blank" href="${VERIFY_PATH}/users/verify/${verificationToken}">Click here to verify Email</a>`,
     };
 
     await sendEmail(verifyEmail);
@@ -193,7 +193,7 @@ const resetVerify = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: "Verify Email",
-    html: `<a target="_blank" href="${VERIFY_PATH}/api/users/verify/${user.verificationToken}">Click here to verify Email</a>`,
+    html: `<a target="_blank" href="${VERIFY_PATH}/users/verify/${user.verificationToken}">Click here to verify Email</a>`,
   };
 
   await sendEmail(verifyEmail);
