@@ -8,7 +8,7 @@ const {schemas} = require("../../models/user")
 
 const ctrlAuth = require("../../controllers/auth")
 
-router.get("/verify", validateBody(schemas.verifyShema), ctrlAuth.resetVerify)
+router.post("/verify", validateBody(schemas.verifyShema), ctrlAuth.resetVerify)
 
 router.get("/verify/:verificationToken", ctrlAuth.verify)
 
