@@ -67,7 +67,7 @@ const login = async (req, res, next) => {
     }
 
     if (!user.verify) {
-      throw HttpErrors(401, "");
+      throw HttpErrors(401, "Verification has not already been passed");
     }
 
     const passwordCompare = bcrypt.compare(password, user.password);
