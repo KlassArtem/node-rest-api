@@ -188,7 +188,9 @@ const resetVerify = async (req, res) => {
   }
 
   if (user.verify) {
-    throw HttpErrors(400, "Verification has already been passed");
+    res.status(400).json({
+      message: "Verification has already been passed",
+    });
   }
 
   const verifyEmail = {
