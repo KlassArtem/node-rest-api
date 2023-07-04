@@ -1,5 +1,5 @@
 const HttpErrors = (status, message) => {
-  const error = new Error(message);
+  const error = Error(message);
   error.status = status;
   return error;
 };
